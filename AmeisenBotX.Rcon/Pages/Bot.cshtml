@@ -1,0 +1,124 @@
+﻿@page "{guid?}"
+@using AmeisenBotX.Rcon.Utils
+@model AmeisenBotX.Rcon.Pages.BotModel
+@{
+    ViewData["Title"] = "AmeisenBotX - " + Model.BotClient.Name;
+    Layout = "~/Pages/Shared/MasterLayout.cshtml";
+}
+
+<div id="clientGrid" class="uk-child-width-1-3 uk-grid-small uk-grid-match" uk-grid>
+</div>
+
+<script>
+    updateClient();
+    var mainTimer = setInterval(updateClient, 1000);
+
+    function updateClient() {
+        $.getJSON("/api/client/@Model.BotClient.Guid", function (data) {
+            var botHtml = generateClientHtml(data);
+            $("#clientGrid").html(botHtml);
+        });
+    }
+
+    function generateClientHtml(botClient) {
+        var botData;
+        if (botClient.DataMessages.length > 0) {
+            botData = botClient.DataMessages[botClient.DataMessages.length - 1];
+        }
+
+        var botImageHtml = "";
+        if (botClient.Image) {
+            botImageHtml = `
+                <div class="uk-width-auto">
+                    <img class="uk-border-circle" width="40" height="40" src="${botClient.Image}">
+                </div>`;
+        }
+
+        var botScreenImageHtml = "";
+        if (botClient.LastScreenImage) {
+            botScreenImageHtml = `
+                <div class="uk-width-auto">
+                    <img src="${botClient.LastScreenImage}" style="width: 100%;">
+                </div>`;
+        }
+
+        var botAliveText = botClient.IsAlive ? "Active" : "Inactive";
+
+        return `<div class="uk-child-width-1-2 uk-width-3 uk-padding-small uk-box-shadow-large uk-margin-bottom uk-margin-remove-left dark-card" uk-grid>
+                    <div class="uk-margin-small-left uk-padding-remove-left uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-auto">
+                            ${botImageHtml}
+                        </div>
+                        <div class="uk-expand uk-light">
+                            <h3 class="uk-card-title uk-margin-remove-bottom abot-font-header" style="color: ${getClassColor(botClient.Class)};">${botClient.Name}</h3>
+                            <p class="uk-margin-remove-top">${botClient.Role} <span class="abot-font">Lvl. ${botData?.level} ${botClient.Class} (iLvl. ${botData?.itemlevel})</span><br /><span class="uk-text-muted abot-font">${botClient.Gender} ${botClient.Race}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-3 uk-grid-small uk-grid-match uk-padding-small uk-box-shadow-large uk-margin-bottom uk-margin-remove-left dark-card" uk-grid>
+                    <div>
+                        <button actiontype="pauseresume" guid="${botClient.Guid}" type="submit" class="actionButton uk-button uk-button-small uk-button-secondary dark-button abot-font">Pause / Resume</button>
+                    </div>
+                </div>
+                <div class="uk-padding-remove-left uk-padding-small-right uk-margin-bottom">
+                    <div class="uk-card uk-card-default uk-card-body uk-card-secondary uk-padding-small uk-box-shadow-large dark-card">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <div class="uk-width-auto">
+                                📟<span class="abot-font"> State:</span><br/>
+                                🗺️<span class="abot-font"> Position:</span><br/>
+                                🗺️<span class="abot-font"> Map:</span><br/>
+                                🗺️<span class="abot-font"> Zone:</span><br/>
+                                🗺️<span class="abot-font"> SubZone:</span><br/>
+                                <small class="abot-font">Active Since:</small><br />
+                                <small class="abot-font">Last Signal:</small><br />
+                                <small class="uk-text-muted abot-font">Web GUID:</small>
+                            </div>
+                            <div class="uk-width-expand">
+                                <span class="abot-font">${botData?.state}</span><br/>
+                                <span class="abot-font">X: ${Math.round(botData?.posx)} Y: ${Math.round(botData?.posy)} Z: ${Math.round(botData?.posz)}</span><br/>
+                                <span class="abot-font">${botData?.mapname}</span><br/>
+                                <span class="abot-font">${botData?.zonename}</span><br/>
+                                <span class="abot-font">${botData?.subzonename}</span><br/>
+                                <small class="abot-font">${botClient?.ActiveSinceString}</small><br />
+                                <small class="abot-font">${botClient?.LastKeepAliveString}</small><br />
+                                <small class="uk-text-muted abot-font">${botClient?.Guid}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-padding-small-left uk-padding-small-right uk-margin-bottom">
+                    <div class="uk-card uk-card-default uk-card-body uk-card-secondary uk-padding-small uk-box-shadow-large dark-card">
+                    </div>
+                </div>
+                <div class="uk-padding-small-left uk-margin-bottom">
+                    <div class="uk-card uk-card-default uk-card-body uk-card-secondary uk-padding-small uk-box-shadow-large dark-card">
+                    </div>
+                </div>
+                <div class="uk-padding uk-width-3 uk-margin-remove-left uk-flex-center dark-card">
+                    ${botScreenImageHtml}
+                </div>`
+    }
+
+    $(document).on('click', '.actionButton', function () {
+        var btn = $(this);
+        btn.prop('disabled', true);
+
+        window.setTimeout(function () {
+            btn.prop('disabled', false);
+        }, 2000);
+
+        var dataToSend = {
+            "guid": $(this).attr("guid"),
+            "action": $(this).attr("actiontype")
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: "/api/action/",
+            data: JSON.stringify(dataToSend),
+            success: function (data) { },
+            contentType: "application/json",
+            dataType: 'json'
+        });
+    });
+</script>

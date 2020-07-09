@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+
+<html style="background-color: #19181B">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/js/uikit-icons.min.js"></script>
+
+    <!-- JQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Work+Sans&display=swap" rel="stylesheet">
+
+    <!-- Custom Colors -->
+    <style>
+        .abot-font-header {
+            font-family: 'Aldrich', sans-serif;
+            min-height: 0px;
+        }
+
+        .abot-font {
+            font-family: 'Work Sans', sans-serif;
+            min-height: 0px;
+        }
+
+        .dark-bg {
+            background-color: #19181B;
+        }
+
+        .dark-card {
+            background-color: #231F2C;
+        }
+
+        .dark-nav {
+            background-color: #332F3C;
+        }
+
+        .dark-button {
+            background-color: #453E59;
+        }
+
+            .dark-button:hover:enabled {
+                background-color: #4F4567;
+            }
+    </style>
+
+    <!-- Utility JS -->
+    <script>
+        function getClassColor(wowClass) {
+            switch (wowClass.toUpperCase()) {
+                case "DEATHKNIGHT": return "rgb(196, 30, 59)";
+                case "DRUID": return "rgb(255, 125, 10)";
+                case "HUNTER": return "rgb(171, 212, 115)";
+                case "MAGE": return "rgb(105, 204, 240)";
+                case "PALADIN": return "rgb(245, 140, 186)";
+                case "PRIEST": return "rgb(255, 255, 255)";
+                case "ROGUE": return "rgb(255, 245, 105)";
+                case "SHAMAN": return "rgb(0, 112, 222)";
+                case "WARLOCK": return "rgb(148, 130, 201)";
+                case "WARRIOR": return "rgb(199, 156, 110)";
+
+                default: return "rgb(255, 255, 255)";
+            }
+        }
+
+        function getResourceColor(wowClass) {
+            switch (wowClass.toUpperCase()) {
+                case "DEATHKNIGHT": return "rgb(0, 209, 255)";
+                case "DRUID": return "rgb(0, 0, 255)";
+                case "HUNTER": return "rgb(0, 0, 255)";
+                case "MAGE": return "rgb(0, 0, 255)";
+                case "PALADIN": return "rgb(0, 0, 255)";
+                case "PRIEST": return "rgb(0, 0, 255)";
+                case "ROGUE": return "rgb(255, 255, 0)";
+                case "SHAMAN": return "rgb(0, 0, 255)";
+                case "WARLOCK": return "rgb(0, 0, 255)";
+                case "WARRIOR": return "rgb(255, 0, 0)";
+
+                default: return "rgb(255, 255, 255)";
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav class="uk-navbar-container uk-navbar-transparent uk-light uk-box-shadow-large dark-nav" style="height: 64px;" uk-navbar>
+        <div class="uk-navbar-left">
+            <a class="uk-navbar-item uk-logo abot-font-header" href="/">AmeisenBotX RCon Server</a>
+        </div>
+    </nav>
+    <div class="uk-container uk-margin-medium-top  uk-margin-medium-bottom">
+        @RenderBody()
+    </div>
+</body>
+</html>
